@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FileReceiverActivity">
+
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/spinning"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_centerInParent="true"
+        android:indeterminate="true" />
+
+    <TextView
+        android:id="@+id/operation_text"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spinning"
+        android:layout_marginTop="16dp"
+        android:gravity="center" />
+
+    <Button
+        android:id="@+id/install_from_play_store_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/operation_text"
+        android:layout_marginTop="8dp"
+        android:minHeight="44dp"
+        android:padding="8dp"
+        android:text="@string/install_button_text"
+        android:visibility="invisible" />
+</RelativeLayout>

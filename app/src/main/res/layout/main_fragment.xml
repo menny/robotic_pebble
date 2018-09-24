@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/main_title" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/main_paragraph_1_pebble_apocalypse" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:autoLink="web"
+            android:linksClickable="true"
+            android:text="@string/main_paragraph_2_how_can_I_help" />
+
+        <include layout="@layout/sub_main_install_pebble_app" />
+
+        <include layout="@layout/sub_main_auth_to_rebble_io" />
+
+        <include layout="@layout/sub_main_boot_rebble_io" />
+
+        <include layout="@layout/sub_main_final_steps" />
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="To be clear, this app is not affiliated with Pebble™ or Rebble.io in any way. It is here just to help a fellow Pebbler." />
+    </LinearLayout>
+</ScrollView>

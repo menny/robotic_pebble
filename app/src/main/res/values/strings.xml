@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Pebble™-Rebble</string>
+    <string name="send_file_action">Send file to Pebble™</string>
+    <string name="send_firmware_action">Send firmware to Pebble™</string>
+    <string name="install_button_text">Go to Pebble™ on Play Store</string>
+    <string name="requesting_android_permission">Requesting Android permissions…</string>
+    <string name="loading_file_to_local_storage">Loading file to local storage</string>
+    <string name="send_file_to_pebble_app">Sending file to Pebble™…</string>
+    <string name="error_pebble_app_not_installed">The Pebble™ app is not installed on your device!</string>
+    <string name="error_permission_not_granted">Can not send the file to Pebble™, if I can not write to storage first.</string>
+    <string name="error_intent_data_unrecognized">Did not receive any data about Pebble™ file to upload!</string>
+    <string name="error_failed_to_perform_proxy">Failed to perform proxy! Error: %s</string>
+    <string name="main_title">Welcome to Pebble™-Rebble helper</string>
+    <string name="main_paragraph_1_pebble_apocalypse">On December 7, 2016, Pebble™ officially announced that the company would be shut down and would no longer manufacture or continue support for any devices. This includes web-services (device initialization and registration, apps-store, weather, health, etc.). Luckily, Pebble™ and Fitbit™ recognize the upcoming Pebble-apocalypse and allowed the watch and the Pebble™ app to be configured with other web-services provides. Enter <b>Rebble.io</b>.</string>
+    <string name="main_paragraph_2_how_can_I_help">This app will help you set up you Pebble™ device using https://rebble.io and, optionally, setup Right-to-Left support using https://elbbep.cpfx.ca. This app will also fix the firmware/language-pack/pbw upload issue that the Android Pebble™ app has with newer version of Android.</string>
+</resources>

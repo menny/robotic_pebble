@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="net.evendanan.robotic_pebble">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".RoboticPebbleApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".FileReceiverActivity"
+            android:icon="@mipmap/ic_send_file"
+            android:label="@string/send_file_action"
+            android:launchMode="singleTop"
+            android:roundIcon="@mipmap/ic_send_file_round">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:host="*" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.pbz" />
+                <data android:pathPattern=".*\\..*\\.pbz" />
+                <data android:pathPattern=".*\\..*\\..*\\.pbz" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.pbz" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.pbz" />
+                <data android:pathPattern=".*\\.pbl" />
+                <data android:pathPattern=".*\\..*\\.pbl" />
+                <data android:pathPattern=".*\\..*\\..*\\.pbl" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.pbl" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.pbl" />
+                <data android:pathPattern=".*\\.pbw" />
+                <data android:pathPattern=".*\\..*\\.pbw" />
+                <data android:pathPattern=".*\\..*\\..*\\.pbw" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.pbw" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.pbw" />
+            </intent-filter>
+
+            <!-- This will allow to send ANY file to Pebble.  -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
