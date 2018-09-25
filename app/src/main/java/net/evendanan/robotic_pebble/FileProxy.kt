@@ -16,11 +16,15 @@ import kotlinx.coroutines.experimental.launch
 import net.evendanan.chauffeur.lib.permissions.PermissionsRequest
 import java.io.File
 import java.io.IOException
+import java.io.InputStream
+import java.net.URL
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicBoolean
 
 const val PEBBLE_APP_PACKAGE = "com.getpebble.android.basalt"
 const val PEBBLE_MAIN_ACTIVITY = "com.getpebble.android.main.activity.MainActivity"
+
+private const val LOGCAT_TAG = "FileProxy"
 
 interface UserNotification {
     fun closeUi()
@@ -34,13 +38,16 @@ class FileProxy(private val userNotification: UserNotification) {
     private var job: Job? = null
 
     fun handleIntent(context: Context, intent: Intent) {
-        Log.d("FileProxy", "Intent $intent")
+        Log.d(LOGCAT_TAG, "Intent $intent")
+        Log.d(LOGCAT_TAG, "Intent $intent with extra ${intent.extras?.keySet()?.joinToString(",") { "$it -> ${intent.extras?.get(it)}" }}")
         when {
-            intent.data != null -> intent.data
-            intent.hasExtra(Intent.EXTRA_STREAM) -> intent.getParcelableExtra(Intent.EXTRA_STREAM)
+            intent.data != null -> intent.data!! to intent.data!!.lastPathSegment
+            intent.hasExtra(Intent.EXTRA_STREAM) -> intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM) to intent.getStringExtra(Intent.EXTRA_TITLE)
             else -> null
-        }?.let { receivedUri ->
-            Log.d("FileProxy", "Resolved Intent's URI $receivedUri, scheme: ${receivedUri.scheme}")
+        }?.let { (uri, possibleTitle) ->
+            uri to (possibleTitle ?: uri.lastPathSegment)
+        }?.let { (receivedUri, title) ->
+            Log.d(LOGCAT_TAG, "Resolved Intent's URI $receivedUri, scheme: ${receivedUri.scheme}, title: $title")
 
             job?.cancel()
 
@@ -57,8 +64,11 @@ class FileProxy(private val userNotification: UserNotification) {
                     val fileUri = async(CommonPool) {
                         when (receivedUri.scheme) {
                             null -> Uri.fromParts("file", receivedUri.path, "")//going to assume this is a local file
-                            else -> receivedUri //"file","http", "https", "content" or anything else...
-                        }.apply { proxyUriToLocalFileUri(context, this) }
+                            "file" -> receivedUri//files can just be read
+                            "http", "https" -> proxyWebUriToLocalFileUri(receivedUri, title)
+                            "content" -> proxyContentUriToLocalFileUri(context, receivedUri, title)
+                            else -> receivedUri //I don't know...
+                        }
                     }.await()
 
                     userNotification.showOperationText(context.getString(R.string.send_file_to_pebble_app))
@@ -120,17 +130,30 @@ private class ProxyPermissions : PermissionsRequest {
     }
 }
 
-private fun proxyUriToLocalFileUri(context: Context, uriToProxyLocally: Uri): Uri {
-    Log.d("FileProxy", "proxying $uriToProxyLocally locally...")
-    context.contentResolver.openInputStream(uriToProxyLocally).use { receivedInputStream ->
+private fun proxyWebUriToLocalFileUri(uriToProxyLocally: Uri, title: String): Uri {
+    Log.d(LOGCAT_TAG, "proxying web $uriToProxyLocally locally...")
+    return inputStreamToLocalFileUri(
+            URL(uriToProxyLocally.toString()).openStream(), title)
+}
+
+private fun proxyContentUriToLocalFileUri(context: Context, uriToProxyLocally: Uri, title: String): Uri {
+    Log.d(LOGCAT_TAG, "proxying content $uriToProxyLocally locally...")
+    return context.contentResolver.openInputStream(uriToProxyLocally)?.let {
+        inputStreamToLocalFileUri(it, title)
+    }
+            ?: throw IllegalArgumentException("The URI $uriToProxyLocally could not be opened for reading!")
+}
+
+private fun inputStreamToLocalFileUri(receivedInputStream: InputStream, targetFileName: String): Uri {
+    receivedInputStream.use { _ ->
         File(Environment.getExternalStorageDirectory(), "PebbleTransfer").run {
             if ((exists() && isDirectory) || mkdirs()) {
-                val targetFile = File(this, uriToProxyLocally.lastPathSegment)
+                val targetFile = File(this, targetFileName)
                 targetFile.outputStream().use {
                     receivedInputStream.copyTo(it)
                 }
 
-                Log.d("FileProxy", "Copied remote data to ${targetFile.absolutePath}")
+                Log.d(LOGCAT_TAG, "Copied remote data to ${targetFile.absolutePath}")
                 return Uri.fromFile(targetFile)
             } else {
                 throw IOException("Was not able to create PebbleTransfer folder!")

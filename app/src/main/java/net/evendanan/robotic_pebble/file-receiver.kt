@@ -2,7 +2,6 @@ package net.evendanan.robotic_pebble
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.widget.ContentLoadingProgressBar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +30,6 @@ class FileProxyFragment : Fragment(), UserNotification {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.let {
-            view.findViewById<ContentLoadingProgressBar>(R.id.spinning).show()
             fileProxy.handleIntent(it, it.intent)
             it.intent = null
         }

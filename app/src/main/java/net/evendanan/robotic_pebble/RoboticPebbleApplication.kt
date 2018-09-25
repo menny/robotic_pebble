@@ -12,7 +12,6 @@ class RoboticPebbleApplication : Application() {
             //the other way to do it would be to use FileProvider, but the Pebble app is only
             //allowing content:// from well-known providers (gmail, Inbox, downloads and a few others)
             StrictMode.VmPolicy.Builder().apply {
-                detectAll()
                 StrictMode.setVmPolicy(build())
             }
         }
