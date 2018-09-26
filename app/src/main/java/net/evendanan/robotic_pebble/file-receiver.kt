@@ -49,7 +49,7 @@ class FileProxyFragment : Fragment(), UserNotification {
     }
 
     private val chauffeurActivity: FileReceiverActivity?
-        get() = activity as FileReceiverActivity?
+        get() = activity as? FileReceiverActivity
 
     override fun askForAndroidPermission(request: PermissionsRequest) {
         chauffeurActivity?.startPermissionsRequest(request)

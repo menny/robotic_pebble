@@ -23,9 +23,25 @@
             android:layout_gravity="center"
             android:text="Download patches..." />
 
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="You can also manage you Rebble account (including subscriptions to weather and voice)" />
+
+        <Button
+            android:id="@+id/manage_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Manage account..." />
+
+        <TextView
+            style="@style/SetupStepDone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="Or just go ahead and explore you newly setup Rebble-powered device! See'ya." />
     </LinearLayout>
 </merge>
