@@ -8,11 +8,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.Unconfined
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.android.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.evendanan.chauffeur.lib.permissions.PermissionsRequest
 import java.io.File
 import java.io.IOException
@@ -35,7 +36,8 @@ interface UserNotification {
 }
 
 class FileProxy(private val userNotification: UserNotification) {
-    private var job: Job? = null
+    private var viewModelJob = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main)
 
     fun handleIntent(context: Context, intent: Intent) {
         Log.d(LOGCAT_TAG, "Intent $intent")
@@ -49,19 +51,19 @@ class FileProxy(private val userNotification: UserNotification) {
         }?.let { (receivedUri, title) ->
             Log.d(LOGCAT_TAG, "Resolved Intent's URI $receivedUri, scheme: ${receivedUri.scheme}, title: $title")
 
-            job?.cancel()
+            viewModelJob.cancel()
 
-            job = launch(Unconfined) {
+            viewModelJob = uiScope.launch(Dispatchers.Main.immediate) {
                 userNotification.showOperationText(context.getString(R.string.requesting_android_permission))
 
                 val proxyPermissions = ProxyPermissions()
                 userNotification.askForAndroidPermission(proxyPermissions)
-                val hasPermissions = async(CommonPool) { proxyPermissions.waitForResponse() }.await()
+                val hasPermissions = withContext(Dispatchers.Default) { proxyPermissions.waitForResponse() }
 
                 if (hasPermissions) {
                     userNotification.showOperationText(context.getString(R.string.loading_file_to_local_storage))
 
-                    val fileUri = async(CommonPool) {
+                    val fileUri = withContext(Dispatchers.Default) {
                         when (receivedUri.scheme) {
                             null -> Uri.fromParts("file", receivedUri.path, "")//going to assume this is a local file
                             "file" -> receivedUri//files can just be read
@@ -69,7 +71,7 @@ class FileProxy(private val userNotification: UserNotification) {
                             "content" -> proxyContentUriToLocalFileUri(context, receivedUri, title)
                             else -> receivedUri //I don't know...
                         }
-                    }.await()
+                    }
 
                     userNotification.showOperationText(context.getString(R.string.send_file_to_pebble_app))
 
@@ -89,7 +91,7 @@ class FileProxy(private val userNotification: UserNotification) {
                     userNotification.showOperationText(context.getString(R.string.error_permission_not_granted))
                 }
             }
-            job?.invokeOnCompletion { ex ->
+            viewModelJob.invokeOnCompletion { ex ->
                 ex?.run {
                     printStackTrace()
                     userNotification.showOperationText(context.getString(R.string.error_failed_to_perform_proxy, this))
@@ -100,7 +102,7 @@ class FileProxy(private val userNotification: UserNotification) {
     }
 
     fun destroy() {
-        job?.cancel()
+        viewModelJob.cancel()
     }
 
 }

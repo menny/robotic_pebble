@@ -9,7 +9,6 @@ import kotlinx.android.synthetic.main.upload_file.*
 import net.evendanan.chauffeur.lib.permissions.PermissionsFragmentChauffeurActivity
 import net.evendanan.chauffeur.lib.permissions.PermissionsRequest
 
-
 class FileReceiverActivity : PermissionsFragmentChauffeurActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

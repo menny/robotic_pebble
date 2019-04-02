@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -176,7 +178,8 @@ class WebFragment : Fragment() {
                     //perform authentication. So, we fake it.
                     //we should also provide an option to the user to perform the operation
                     //with the on-device web-browser, in case they do not trust this WebView.
-                    settings.userAgentString = "Mozilla/5.0 (Linux; Android 5.1; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19"
+                    settings.userAgentString = "Mozilla/5.0 (Linux; Android ${Build.VERSION.RELEASE}; ${Build.MODEL} Build/${Build.DISPLAY}) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19"
+                    Log.d(MAIN_TAG, "Using user-agent '${settings.userAgentString}'")
                     webViewClient = PebbleFilesWebViewClient(view.findViewById(R.id.loadingIndicator), mainActivity)
                     loadUrl(url)
                     SuccessPageFinder(this, mainActivity)
